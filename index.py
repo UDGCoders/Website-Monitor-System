@@ -15,19 +15,18 @@ url="https://quotes.toscrape.com/"
 # connetcing and Fetching data 
 # ===========================================
 def fetch_data():
-    response=None
     try:
         response = requests.get(url)
-        if response.status_code == 200:
-            print("connection completed")
-            log("Connection Completed")
-
-            # data = response.json()
-    except requests.exceptions.ConnectionError:
+        response.raise_for_status()
+        log("Fetch Coompleted")
+        return response.text
+        # if response.status_code == 200:
+        #     print("connection completed")
+        #     log("Connection Completed")
+    except:
         print("Connection Failed")
         log("Connection Failed")
-
-    return response
+        return None
 
 # ===========================================
 # function for logging records
@@ -49,10 +48,11 @@ def log(message):
 # ===========================================
 def fetch_all():
     try:
-        with open("file.csv","r",newline='') as file:
-            reader= csv.reader(file)
-            for line in reader:
-                print(line)
+        with open("file.html","r",newline='',encoding="utf-8") as file:
+            return file.read()
+            # reader= csv.reader(file)
+            # for line in reader:
+            #     print(line)
         log("read mode for file")
     except FileNotFoundError:
         print("File not Found")
@@ -62,7 +62,7 @@ def fetch_all():
 # Checks that file exists or not is exists then compare with new html file 
 # if not exists then create a new file 
 # 
-def save_data():
+def save_data(content):
     os.makedirs("files",exist_ok=True)
     response=None
     response=fetch_data()
@@ -73,13 +73,14 @@ def save_data():
         author=soup.find_all("small",class_="author")
         try:
             if os.path.exists("files/old_data.csv"):
-                with open("files/new_data.csv","w",newline="",encoding="utf-8") as file:
+                with open("files/new_data.html","w",newline="",encoding="utf-8") as file:
                     writer=csv.writer(file)
-                    writer.writerow(["Author", "Quote"]) # Header
-                    for quote in qoutes:
-                        q_text = quote.find("span", class_="text").text
-                        q_author = quote.find("small", class_="author").text
-                        writer.writerow([q_author, q_text])
+                    file.write(content)
+                    # writer.writerow(["Author", "Quote"]) # Header
+                    # for quote in qoutes:
+                    #     q_text = quote.find("span", class_="text").text
+                    #     q_author = quote.find("small", class_="author").text
+                    #     writer.writerow([q_author, q_text])
 
             else:
                 with open("files/old_data.csv",'w',newline="",encoding="utf-8")as file:
