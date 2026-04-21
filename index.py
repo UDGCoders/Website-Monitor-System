@@ -50,9 +50,7 @@ def fetch_all():
     try:
         with open("file.html","r",newline='',encoding="utf-8") as file:
             return file.read()
-            # reader= csv.reader(file)
-            # for line in reader:
-            #     print(line)
+            
         log("read mode for file")
     except FileNotFoundError:
         print("File not Found")
@@ -76,11 +74,7 @@ def save_data(content):
                 with open("files/new_data.html","w",newline="",encoding="utf-8") as file:
                     writer=csv.writer(file)
                     file.write(content)
-                    # writer.writerow(["Author", "Quote"]) # Header
-                    # for quote in qoutes:
-                    #     q_text = quote.find("span", class_="text").text
-                    #     q_author = quote.find("small", class_="author").text
-                    #     writer.writerow([q_author, q_text])
+                    
 
             else:
                 with open("files/old_data.csv",'w',newline="",encoding="utf-8")as file:
