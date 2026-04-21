@@ -1,5 +1,4 @@
 import os
-import csv
 import requests
 from datetime import datetime   
 
@@ -18,7 +17,7 @@ def fetch_data():
     try:
         response = requests.get(url)
         response.raise_for_status()
-        log("Fetch Coompleted")
+        log("Fetch Completed")
         return response.text
 
     except:
@@ -47,14 +46,15 @@ def log(message):
 # ===========================================
 
 def load_old_data():
-    log("read mode for file")
     try:
-        with open("files/old.html","r",newline='',encoding="utf-8") as file:
+        with open("data/old.html","r",encoding="utf-8") as file:
+            log("read mode for file")
             return file.read()
             
     except FileNotFoundError:
         print("File not Found")
         log("File not found")
+        return None 
 
 # =========================================================================
 # Checks that file exists or not is exists then compare with new html file 
@@ -62,21 +62,34 @@ def load_old_data():
 # =========================================================================
 
 def save_data(content):
-    os.makedirs("files",exist_ok=True)
+    os.makedirs("data",exist_ok=True)
    
     try:
-        if os.path.exists("files/old.html"):
-            with open("files/new_data.html","w",newline="",encoding="utf-8") as file:                  
-                file.write(content)
-        else:
-            with open("files/old.html","w",newline="",encoding="utf-8") as file:
-                file.write(content)
+        with open("data/old.html","w",encoding="utf-8") as file:                  
+            file.write(content)
+            log("data written in file")
+            print("data written in file")
                 
     except FileNotFoundError:
         print("File Not Found")
         log("File Not Found")
 
 
+def main():
+    log("Run Started")
 
-new_data = fetch_data()
-old_data = load_old_data()
+    new_data = fetch_data()
+    old_data = load_old_data()
+    if new_data == None:
+        log("Cannot Run")
+    elif old_data==None:
+        log("First Run")
+        save_data(new_data)
+    elif old_data == new_data:
+        log("no change")
+    else:
+        log("Updated")
+        save_data(new_data)
+    log("Run Completed")
+
+main()
